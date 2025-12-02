@@ -17,7 +17,7 @@ class HoldConcurrencyTest extends TestCase
             'stock_available' => 5
         ]);
 
-        // simulate 20 users trying to reserve (sequentially for PHPUnit)
+        
         for ($i = 0; $i < 20; $i++) {
             $this->postJson('/api/holds', [
                 'product_id' => $product->id,
