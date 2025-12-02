@@ -18,12 +18,19 @@ class HoldConcurrencyTest extends TestCase
         ]);
 
         
-        for ($i = 0; $i < 20; $i++) {
-            $this->postJson('/api/holds', [
-                'product_id' => $product->id,
-                'quantity' => 1
-            ]);
-        }
+        $promises = [];
+
+for ($i = 0; $i < 20; $i++) {
+    $promises[] = function () use ($product) {
+        return $this->postJson('/api/holds', [
+            'product_id' => $product->id,
+            'quantity' => 1,
+        ]);
+    };
+}
+
+$results = array_map(fn($fn) => $fn(), $promises);
+
 
         $reserved = DB::table('reservations')
                       ->where('product_id', $product->id)
